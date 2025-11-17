@@ -3736,7 +3736,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fef4ddd3c9ce6534eaebd7ff30963d78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currencyType: 0
+  currencyType: 1
   amount: 1
 --- !u!1 &1049006529
 GameObject:
@@ -3935,7 +3935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fef4ddd3c9ce6534eaebd7ff30963d78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currencyType: 0
+  currencyType: 2
   amount: 1
 --- !u!1 &1081781789
 GameObject:
