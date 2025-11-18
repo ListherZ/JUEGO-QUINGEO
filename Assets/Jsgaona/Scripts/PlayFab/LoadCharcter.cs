@@ -1,17 +1,15 @@
 using Jsgaona;
-using UnityEngine;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEditor.ShaderGraph.Serialization;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Jsgaona
 {
-
-
-    // Se emplea este script para cargar del personaje, desde cualquier escena
+    // Se emplea este script para cargar el personaje, desde cualquier escena
     public class LoadCharcter : LobbyManager
     {
-            
         // Referencia del prefab del personaje jugable
         [SerializeField] private GameObject prefabPlayer;
 
@@ -24,7 +22,7 @@ namespace Assets.Jsgaona
         // Referencia de la camara de cinemachine
         [SerializeField] private CinemachineCamera virtualCamera;
 
-        [Header("All enemies game")]    
+        [Header("All enemies game")]
         // Referencia de todos los enemigos dentro del juego
         [SerializeField] private List<EnemyAi> allEnemies;
 
@@ -33,16 +31,19 @@ namespace Assets.Jsgaona
 
         // Referencia del playerCombat
         private PlayerCombat playerCombat;
-        
 
-        // Metodo de llamada de Unity, se llamada una unica vez al iniciar el app despues de Awake
-        // Se inicializa las variables principales de modificacion
+        // Vidas del jugador
+        private int playerLives = 3;
+
+        // UI de Game Over
+        [SerializeField] private GameObject gameOverUI;
+
+        // Metodo de llamada de Unity, se llama una unica vez al iniciar el app despues de Awake
         protected override void Start()
         {
             base.Start();
 
             // Se pregunta si existe la referencia del jugador para destruirlo
-            // Debido a que en el lobby no debe existir el personaje jugable
             GameObject playerDetected = GameObject.FindGameObjectWithTag("Player");
             if (playerDetected == null)
             {
@@ -53,7 +54,7 @@ namespace Assets.Jsgaona
             if (playerDetected.TryGetComponent(out PlayerCombat playerCombat))
             {
                 this.playerCombat = playerCombat;
-                this.playerCombat.onDead += ResetAllEnemies;
+                this.playerCombat.onDead += HandlePlayerDeath;
             }
 
             PlayerHealthView canvas = FindFirstObjectByType<PlayerHealthView>();
@@ -64,37 +65,30 @@ namespace Assets.Jsgaona
             {
                 virtualCamera = FindFirstObjectByType<CinemachineCamera>();
             }
-            // Aque se establece el efecto de temblor en la camara
             CameraControl cameraControl = playerDetected.GetComponent<CameraControl>();
             if (cameraControl != null && virtualCamera != null)
             {
                 cameraControl.SetComponentCameraControl(virtualCamera);
-
-            } 
-
-            CameraController cameraController = playerDetected.GetComponent<CameraController>();
-            if (cameraController != null && virtualCamera != null){
-                cameraController.SetCamera(virtualCamera);
-
             }
 
-            // Si no existe en escena una referencia valida del administrador de escenas, se lo crea
+            CameraController cameraController = playerDetected.GetComponent<CameraController>();
+            if (cameraController != null && virtualCamera != null)
+            {
+                cameraController.SetCamera(virtualCamera);
+            }
+
             if (canvas == null)
             {
-                // Se genera la instancia del canvas
                 GameObject canvasGo = Instantiate(prefabCanvasUIPlayer, Vector3.zero, Quaternion.identity);
                 canvas = canvasGo.GetComponent<PlayerHealthView>();
 
-                // Se valdia si el personaje dispone del controlador de movimiento para asignar el Joystick
                 if (playerControl != null)
                 {
                     Joystick[] array = canvas.gameObject.GetComponentsInChildren<Joystick>();
-                   playerControl.JoystickController = array[0];
+                    playerControl.JoystickController = array[0];
                     cameraController.JoystickController = array[1];
-
                 }
 
-                // Se valida si el personaje dispone del controlador de combate
                 if (playerDetected.TryGetComponent(out PlayerCombatController playerCombControl))
                 {
                     canvas.PlayerCombatController = playerCombControl;
@@ -104,20 +98,16 @@ namespace Assets.Jsgaona
 
             playerDetected.transform.rotation = Quaternion.Euler(0, 0, 0);
             if (virtualCamera != null)
-            {            virtualCamera.Follow = playerDetected.transform;
-            virtualCamera.LookAt = playerDetected.transform;
+            {
+                virtualCamera.Follow = playerDetected.transform;
+                virtualCamera.LookAt = playerDetected.transform;
             }
-            // Se establece el objetivo y hacia donde mira la camara
 
-            // virtualCamera.transform.position = playerDetected.transform.position;
-
-            // Se recorre cada enemigo para asignar la referencia del player
             foreach (EnemyAi currentEnemy in allEnemies)
             {
                 currentEnemy.player = playerDetected.transform;
             }
 
-            // Se valida qeu la instancia de la escena este activa para asignarle la puerta
             if (SceneLoadingManager.SceneInstance != null)
             {
                 int idConnection = SceneLoadingManager.SceneInstance.DoorId;
@@ -132,24 +122,37 @@ namespace Assets.Jsgaona
             }
         }
 
-
-        // Metodo de llamada de Unity, se llama una unica vez cuando el GameObject es destruido
         private void OnDestroy()
         {
-            if (playerCombat != null) playerCombat.onDead -= ResetAllEnemies;
+            if (playerCombat != null) playerCombat.onDead -= HandlePlayerDeath;
         }
 
+        // Método que se llama cuando el jugador muere
 
-        // Metodo que se emplea para resetear todas las entidades de enemigos
-        private void ResetAllEnemies()
+        private void HandlePlayerDeath()
         {
-            foreach (EnemyAi currentEnemy in allEnemies)
+            playerLives--;  // Reducir las vidas del jugador
+
+            if (playerLives > 0)
             {
-                //currentEnemy.ChangeState(currentEnemy.GetResetState());
+                // Recargar la escena actual
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+            else
+            {
+                // Si se quedan sin vidas, mostrar pantalla de Game Over
+                ShowGameOverScreen();
+            }
+        
+        }
+
+        // Mostrar pantalla de Game Over
+        private void ShowGameOverScreen()
+        {
+            if (gameOverUI != null)
+            {
+                gameOverUI.SetActive(true);
             }
         }
-
-
-
     }
 }

@@ -10,14 +10,15 @@ namespace Jsgaona  {
     public class PlayerHealthView : MonoBehaviour {
         
         // Referencias de los sliders de la vida y el recurso
-        [SerializeField] private Slider sliderLifePoint;
+        [SerializeField] public Slider sliderLifePoint;
         [SerializeField] private Slider sliderResourcePoint;
         [SerializeField] private Image fillImage;
 
         // Referencias de los labels de la vida y el recurso
         [SerializeField] private TMP_Text txtLifePoint;
         [SerializeField] private TMP_Text txtResourcePoint;
-
+        [SerializeField] private UnityEngine.UI.Slider healthSlider;
+        
         // Se emplea el patron Singleton, para permitir una unica instancia del administrador
         public static PlayerHealthView CanvasInstance { private set; get; }
 
@@ -34,12 +35,22 @@ namespace Jsgaona  {
             // Asegura que solo haya una instancia de esta clase 'Patron de disenio Singleton'
             if(CanvasInstance == null) {
                 CanvasInstance = this;
-                DontDestroyOnLoad(gameObject);
+               // DontDestroyOnLoad(gameObject);
             }else{
                 Destroy(gameObject);
             }
         }
+        public void SetPlayerLives(int lives)
+        {
+            // Si estás usando un Slider para mostrar las vidas
+            if (healthSlider != null)
+            {
+                healthSlider.value = lives;
+            }
 
+            // O si deseas mostrar las vidas de alguna otra forma, como con un texto
+            // puedes agregar código aquí para actualizar un Text UI
+        }
 
         // Metodo que permite configurar la vida y el recurso de la UI
         public void ConfigureLifeAndResource(int maxLifePoint, int maxResourcePoint) {

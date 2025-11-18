@@ -1,6 +1,5 @@
 public enum CurrencyType
 {
-    Score,
-    Coin,
-    Diamond
+    Souls,
+
 }

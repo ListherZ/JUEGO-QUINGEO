@@ -182,9 +182,8 @@ namespace Jsgaona
 
             var stats = new List<StatisticUpdate>
             {
-                new StatisticUpdate { StatisticName = "Score", Value = 0 },
-                new StatisticUpdate { StatisticName = "Coins", Value = 0 },
-                new StatisticUpdate { StatisticName = "Diamonds", Value = 0 } // 🔥 corregido
+                new StatisticUpdate { StatisticName = "Souls", Value = 0 },
+
             };
 
             PlayFabClientAPI.UpdatePlayerStatistics(new UpdatePlayerStatisticsRequest

@@ -160,21 +160,38 @@ namespace Jsgaona {
         }
         public void Update()
         {
+            // Si el player es null, buscar otro con la etiqueta Player
+            if (player == null)
+            {
+                GameObject newPlayer = GameObject.FindGameObjectWithTag("Player");
+                if (newPlayer != null)
+                {
+                    player = newPlayer.transform;
+                    Debug.Log("Enemy: Nueva referencia al Player asignada.");
+                }
+                return; // Evita errores en este frame
+            }
+
+            // Tu lógica normal del enemy
             if (currentState != null)
             {
                 currentState.Update();
             }
-          
+
             animController.SetFloat("speed", agent.speed);
+
             if (!inRange) return;
+
             Vector3 direction = (player.position - transform.position).normalized;
             direction.y = 0;
-            if (direction != Vector3.zero) { 
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            if (direction != Vector3.zero)
+            {
+                Quaternion lookRotation = Quaternion.LookRotation(direction);
                 float newSpeedRot = speedRotation * Time.deltaTime;
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, newSpeedRot);
             }
         }
+
         public void UpdateSpeed(float newspeed)
         { if (newspeed != 0)
             {

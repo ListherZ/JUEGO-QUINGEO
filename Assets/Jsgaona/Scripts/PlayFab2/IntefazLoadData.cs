@@ -9,8 +9,7 @@ namespace Jsgaona
     {
         [Header("UI")]
         public TMP_Text txtScore;
-        public TMP_Text txtCoins;
-        public TMP_Text txtDiamonds;
+  
 
         private void Start()
         {
@@ -32,24 +31,21 @@ namespace Jsgaona
             PlayFabClientAPI.GetPlayerStatistics(new GetPlayerStatisticsRequest(),
                 result =>
                 {
-                    int score = 0;
-                    int coins = 0;
-                    int diamonds = 0;
+                    int souls = 0;
+                   
 
                     foreach (var stat in result.Statistics)
                     {
                         switch (stat.StatisticName)
                         {
-                            case "Score": score = stat.Value; break;
-                            case "Coins": coins = stat.Value; break;
-                            case "Diamonds": diamonds = stat.Value; break;
+                            case "Souls": souls = stat.Value; break;
+
                         }
                     }
 
                     // Enviar al Manager persistente
-                    PlayerCurrencyManager.Instance.score = score;
-                    PlayerCurrencyManager.Instance.coins = coins;
-                    PlayerCurrencyManager.Instance.diamonds = diamonds;
+                    PlayerCurrencyManager.Instance.souls = souls;
+                    
 
                     // Actualizar UI
                     UpdateUIInstant();
@@ -62,9 +58,8 @@ namespace Jsgaona
 
         private void UpdateUIInstant()
         {
-            txtScore.text = "Score: " + PlayerCurrencyManager.Instance.score;
-            txtCoins.text = "Coins: " + PlayerCurrencyManager.Instance.coins;
-            txtDiamonds.text = "Diamonds: " + PlayerCurrencyManager.Instance.diamonds;
+            txtScore.text = "Souls: " + PlayerCurrencyManager.Instance.souls;
+        
         }
     }
 }

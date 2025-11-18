@@ -1,14 +1,10 @@
 using UnityEngine;
-using Assets.JSGAONA.Unidad1.Scripts;
 
-
-namespace Jsgaona {
-    
+namespace Jsgaona
+{
     // Arquitectura M-V-C  <!-- MODELO -->
-    // Se emplea este script para gestionar el sistema de combate del personaje
-    public class PlayerCombat : MonoBehaviour {
-        
-        // Variables visibles desde el inspector de Unity
+    public class PlayerCombat : MonoBehaviour
+    {
         [Header("Life and Resoruce")]
         [SerializeField] private int maxLifePoint = 250;
         [SerializeField] private int maxResourcePoint = 100;
@@ -21,58 +17,46 @@ namespace Jsgaona {
         [Header("Player effects")]
         [SerializeField] private ParticleSystem blood;
 
-        // Delegado para cuando la vida cambia
         public delegate void OnHealthChanged(int amount, int maxLifePoint);
         public event OnHealthChanged HealthChanged;
 
-        // Delegado para cuando el recurso cambia
         public delegate void OnResourceChanged(int amount, int maxResourcePoint, float cooldown);
         public event OnResourceChanged ResourceChanged;
 
-        // Delegado cuando el pj muere y esta sin vida
         public delegate void OnDeadActive();
         public OnDeadActive onDead;
 
-
-        // Variables visibles desde el inspector de Unity
         private bool isAlive = true;
         private int currentLifePoint;
         private int currentResourcePoint;
-        private Animator animController;
+        public Animator animController;
         private PlayerController playerController;
         private CameraControl cameraControl;
 
-        // Propiedades
         public int MaxLifePoint => maxLifePoint;
         public int MaxResourcePoint => maxResourcePoint;
 
-
-        // Metodo de llamada de Unity, se llama una unica vez al iniciar el app, es el primer
-        // metodo en ejecutarse, se realiza la asignacion de componentes
-        private void Awake() {
-            animController = GetComponent<Animator>();
+        private void Awake()
+        {
             playerController = GetComponent<PlayerController>();
             cameraControl = GetComponent<CameraControl>();
         }
 
-
-        // Metodo de llamada de Unity, se llama una unica vez al iniciar el app se llama despues de
-        // Awake, se realiza la configuracion previa al inicio de la lógica del juego
-        private void Start() {
+        private void Start()
+        {
             currentLifePoint = maxLifePoint;
             currentResourcePoint = maxResourcePoint;
         }
 
-
-        private void Update() {
-            if(Input.GetKeyDown(KeyCode.C)) NullPulse(); 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.C)) NullPulse();
         }
 
-
-        // Metodo que se emplea para poder utilizar la habilidad
-        public void NullPulse(){
-            // Se valida que exista referencia de la habilidad y el pj tenga mana
-            if(nullPulse != null && currentResourcePoint >= cost) {
+        public void NullPulse()
+        {
+            if (nullPulse != null && currentResourcePoint >= cost)
+            {
                 animController.SetTrigger("hack");
                 nullPulse.SetActive(true);
                 currentResourcePoint -= cost;
@@ -80,36 +64,37 @@ namespace Jsgaona {
             }
         }
 
+        public void Heal(int amount)
+        {
+            if (!isAlive) return;
 
-        // Metodo que permite curar al personaje
-        public void Heal(int amount) {
-            // Si esta muerto no hacer nada
-            if(!isAlive) return;
             currentLifePoint += amount;
-            // La vida ha superado el maximo permitido
-            if(currentLifePoint > maxLifePoint) {
+            if (currentLifePoint > maxLifePoint)
                 currentLifePoint = maxLifePoint;
-            }
+
             HealthChanged?.Invoke(currentLifePoint, maxLifePoint);
         }
 
+        public void TakeDamage(int amount)
+        {
+            if (!isAlive) return;
 
-        // Metodo que permite recibir algo de danio
-        public void TakeDamage(int amount) {
-            // Si esta muerto no hacer nada
-            if(!isAlive) return;
             currentLifePoint -= amount;
-            cameraControl.ShakeCamera();
-            // Me he quedado sin vida
-            if(currentLifePoint <= 0){
+
+            Debug.Log("Daño recibido por PlayerCombat: " + amount + " | Vida actual: " + currentLifePoint);
+
+            //cameraControl.ShakeCamera();
+
+            if (currentLifePoint <= 0)
+            {
                 currentLifePoint = 0;
                 isAlive = false;
                 playerController.ManagerMovement(false);
                 onDead?.Invoke();
-            }else{
-                // Animacion de recibir daño
             }
-            if(blood != null) blood.Play();
+
+            if (blood != null) blood.Play();
+
             HealthChanged?.Invoke(currentLifePoint, maxLifePoint);
         }
     }

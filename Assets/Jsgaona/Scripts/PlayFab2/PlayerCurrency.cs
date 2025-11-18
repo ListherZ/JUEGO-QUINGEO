@@ -11,10 +11,8 @@ namespace Jsgaona
         public static PlayerCurrencyManager Instance;
 
         [Header("Datos del jugador")]
-        public int score = 0;
-        public int coins = 0;
-        public int diamonds = 0;
-
+        public int souls = 0;
+   
         // Evento para actualizar UI
         public Action OnCurrencyChanged;
 
@@ -55,9 +53,8 @@ namespace Jsgaona
         {
             switch (type)
             {
-                case CurrencyType.Score: score += amount; break;
-                case CurrencyType.Coin: coins += amount; break;
-                case CurrencyType.Diamond: diamonds += amount; break;
+                case CurrencyType.Souls: souls += amount; break;
+             
             }
 
             dataChanged = true;
@@ -72,18 +69,16 @@ namespace Jsgaona
 
             Debug.Log(
                 $"📤 <b>GUARDANDO EN PLAYFAB</b>\n" +
-                $"   Score: {score}\n" +
-                $"   Coins: {coins}\n" +
-                $"   Diamonds: {diamonds}"
+                $"   Souls: {souls}\n" 
+           
             );
 
             var request = new UpdatePlayerStatisticsRequest
             {
                 Statistics = new List<StatisticUpdate>
                 {
-                    new StatisticUpdate { StatisticName = "Score", Value = score },
-                    new StatisticUpdate { StatisticName = "Coins", Value = coins },
-                    new StatisticUpdate { StatisticName = "Diamonds", Value = diamonds }
+                    new StatisticUpdate { StatisticName = "Souls", Value = souls },
+            
                 }
             };
 
@@ -115,17 +110,16 @@ namespace Jsgaona
                     {
                         switch (stat.StatisticName)
                         {
-                            case "Score": score = stat.Value; break;
-                            case "Coins": coins = stat.Value; break;
-                            case "Diamonds": diamonds = stat.Value; break;
+                            case "Souls": souls = stat.Value; break;
+                         
                         }
                     }
 
                     Debug.Log(
                         $" <b>DATOS CARGADOS DESDE PLAYFAB</b>\n" +
-                        $"   Score: {score}\n" +
-                        $"   Coins: {coins}\n" +
-                        $"   Diamonds: {diamonds}"
+                        $"   souls: {souls}\n" 
+                      
+                        
                     );
 
                     OnCurrencyChanged?.Invoke();
