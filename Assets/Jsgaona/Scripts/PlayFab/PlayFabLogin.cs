@@ -68,9 +68,8 @@ namespace Jsgaona
                 ClearSavedCredentials();
         }
 
-        // =====================
         //       LOGIN
-        // =====================
+  
         public void Login()
         {
             string loginId = txtEmailLogin.text;
@@ -114,7 +113,7 @@ namespace Jsgaona
 
         private void OnLoginSuccess(LoginResult result)
         {
-            Debug.Log("✅ Login exitoso.");
+            Debug.Log("Login exitoso.");
 
             bool remember = PlayerPrefs.GetInt(PREF_REMEMBER, 0) == 1;
             if (remember)
@@ -122,10 +121,10 @@ namespace Jsgaona
             else
                 ClearSavedCredentials();
 
-            // 🔥 Cargar estadísticas directamente en el manager global
+            //Cargar estadísticas directamente en el manager global
             PlayerCurrencyManager.Instance.LoadFromPlayFab(() =>
             {
-                Debug.Log("🎮 Datos del jugador cargados en PlayerCurrencyManager.");
+                Debug.Log("Datos del jugador cargados en PlayerCurrencyManager.");
             });
             // Mostrar el menú principal
             gameObject.SetActive(false);
@@ -135,12 +134,12 @@ namespace Jsgaona
 
         private void OnLoginFailure(PlayFabError error)
         {
-            Debug.LogError("❌ Error al iniciar sesión: " + error.GenerateErrorReport());
+            Debug.LogError("Error al iniciar sesión: " + error.GenerateErrorReport());
         }
 
-        // =====================
+    
         //       REGISTRO
-        // =====================
+    
         public void Register()
         {
             string nick = txtNickUserRegister.text;
@@ -179,7 +178,7 @@ namespace Jsgaona
 
         private void OnRegisterSuccess(RegisterPlayFabUserResult result)
         {
-            Debug.Log("✅ Registro exitoso. Creando estadísticas iniciales...");
+            Debug.Log("Registro exitoso. Creando estadísticas iniciales...");
 
             var stats = new List<StatisticUpdate>
             {
@@ -192,19 +191,19 @@ namespace Jsgaona
             {
                 Statistics = stats
             },
-            r => Debug.Log("🎮 Estadísticas iniciales creadas."),
-            e => Debug.LogError("❌ Error al crear estadísticas: " + e.GenerateErrorReport()));
+            r => Debug.Log(" Estadísticas iniciales creadas."),
+            e => Debug.LogError(" Error al crear estadísticas: " + e.GenerateErrorReport()));
         }
 
         private void OnRegisterFailure(PlayFabError error)
         {
-            Debug.LogError("❌ Error en registro: " + error.GenerateErrorReport());
+            Debug.LogError("Error en registro: " + error.GenerateErrorReport());
         }
 
 
-        // =====================
+     
         //    RECORDAR DATOS
-        // =====================
+      
         private void SaveCredentials(string loginId, string password)
         {
             PlayerPrefs.SetString(PREF_LOGIN_ID, loginId);

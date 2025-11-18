@@ -49,9 +49,8 @@ namespace Jsgaona
             }
         }
 
-        // ==========================
         //   SUMAR MONEDAS
-        // ==========================
+      
         public void AddCurrency(CurrencyType type, int amount)
         {
             switch (type)
@@ -65,9 +64,8 @@ namespace Jsgaona
             OnCurrencyChanged?.Invoke();
         }
 
-        // ==========================
         //   GUARDAR DATOS
-        // ==========================
+    
         public void SaveToPlayFab()
         {
             dataChanged = false;
@@ -92,11 +90,11 @@ namespace Jsgaona
             PlayFabClientAPI.UpdatePlayerStatistics(request,
                 result =>
                 {
-                    Debug.Log("✔️ Datos guardados correctamente en PlayFab.");
+                    Debug.Log("Datos guardados correctamente en PlayFab.");
                 },
                 error =>
                 {
-                    Debug.LogError("❌ Error guardando en PlayFab: " + error.GenerateErrorReport());
+                    Debug.LogError("Error guardando en PlayFab: " + error.GenerateErrorReport());
                 });
         }
 
@@ -105,9 +103,9 @@ namespace Jsgaona
             SaveToPlayFab();
         }
 
-        // ==========================
+    
         //   CARGAR DATOS
-        // ==========================
+   
         public void LoadFromPlayFab(Action callback = null)
         {
             PlayFabClientAPI.GetPlayerStatistics(new GetPlayerStatisticsRequest(),
@@ -124,7 +122,7 @@ namespace Jsgaona
                     }
 
                     Debug.Log(
-                        $"📥 <b>DATOS CARGADOS DESDE PLAYFAB</b>\n" +
+                        $" <b>DATOS CARGADOS DESDE PLAYFAB</b>\n" +
                         $"   Score: {score}\n" +
                         $"   Coins: {coins}\n" +
                         $"   Diamonds: {diamonds}"
@@ -135,7 +133,7 @@ namespace Jsgaona
                 },
                 error =>
                 {
-                    Debug.LogError("❌ Error cargando stats: " + error.GenerateErrorReport());
+                    Debug.LogError("Error cargando stats: " + error.GenerateErrorReport());
                 });
         }
     }

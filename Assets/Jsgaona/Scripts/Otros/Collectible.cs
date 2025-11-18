@@ -13,7 +13,7 @@ namespace Jsgaona
 
             if (PlayerCurrencyManager.Instance == null)
             {
-                Debug.LogError("❌ No hay PlayerCurrencyManager en la escena.");
+                Debug.LogError("No hay PlayerCurrencyManager en la escena.");
                 return;
             }
 
