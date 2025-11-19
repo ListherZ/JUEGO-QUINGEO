@@ -57,8 +57,9 @@ namespace Jsgaona
         {
             if (nullPulse != null && currentResourcePoint >= cost)
             {
-                animController.SetTrigger("hack");
+                //animController.SetTrigger("hack");
                 nullPulse.SetActive(true);
+                nullPulse.GetComponent<ParticleSystem>().Play();
                 currentResourcePoint -= cost;
                 ResourceChanged?.Invoke(currentResourcePoint, maxResourcePoint, cooldown);
             }
@@ -74,7 +75,13 @@ namespace Jsgaona
 
             HealthChanged?.Invoke(currentLifePoint, maxLifePoint);
         }
-
+        public void refillResource(int amount)
+        {
+            currentResourcePoint += amount;
+            if (currentResourcePoint > maxResourcePoint)
+                currentResourcePoint = maxResourcePoint;
+            ResourceChanged?.Invoke(currentResourcePoint, maxResourcePoint, cooldown);
+        }
         public void TakeDamage(int amount)
         {
             if (!isAlive) return;

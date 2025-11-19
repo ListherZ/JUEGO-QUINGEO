@@ -17,7 +17,6 @@ namespace Jsgaona  {
         // Referencias de los labels de la vida y el recurso
         [SerializeField] private TMP_Text txtLifePoint;
         [SerializeField] private TMP_Text txtResourcePoint;
-        [SerializeField] private UnityEngine.UI.Slider healthSlider;
         
         // Se emplea el patron Singleton, para permitir una unica instancia del administrador
         public static PlayerHealthView CanvasInstance { private set; get; }
@@ -40,18 +39,7 @@ namespace Jsgaona  {
                 Destroy(gameObject);
             }
         }
-        public void SetPlayerLives(int lives)
-        {
-            // Si estás usando un Slider para mostrar las vidas
-            if (healthSlider != null)
-            {
-                healthSlider.value = lives;
-            }
-
-            // O si deseas mostrar las vidas de alguna otra forma, como con un texto
-            // puedes agregar código aquí para actualizar un Text UI
-        }
-
+ 
         // Metodo que permite configurar la vida y el recurso de la UI
         public void ConfigureLifeAndResource(int maxLifePoint, int maxResourcePoint) {
             // El valor minimo de la vida y recurso es cero
