@@ -8,7 +8,7 @@ public class SimpleDoor : MonoBehaviour
 
     private Quaternion closedRotation;
     private Quaternion openRotation;
-
+    [SerializeField] private AudioSource doorSound;
     void Start()
     {
         closedRotation = Quaternion.Euler(0, 90, 0);   // Rotación inicial
@@ -16,12 +16,18 @@ public class SimpleDoor : MonoBehaviour
 
         transform.localRotation = closedRotation;
     }
-
+    private bool YaReprodujo = false;
     void Update()
     {
         if (isOpen)
         {
+            if (!YaReprodujo)
+            {
+                doorSound.Play();
+                YaReprodujo = true;
+            }
             // Mover hacia la rotación abierta
+          
             transform.localRotation = Quaternion.Lerp(
                 transform.localRotation,
                 openRotation,

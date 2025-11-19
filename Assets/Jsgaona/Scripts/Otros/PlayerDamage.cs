@@ -6,7 +6,7 @@ public class EnemyDamage : MonoBehaviour
     public int damagePerSecond = 10;
     public float tickRate = 1f;
     private bool canDamage = true;
-
+    [SerializeField] private AudioSource damageSound;
     private void OnTriggerStay(Collider other)
     {
         Debug.Log(other);
@@ -18,6 +18,8 @@ public class EnemyDamage : MonoBehaviour
             {
                 Debug.Log("EnemyDamage: daño por segundo → " + damagePerSecond);
                 combat.TakeDamage(damagePerSecond);
+                if (damageSound != null)    
+                    damageSound.Play();
                 StartCoroutine(DamageCooldown());
             }
         }

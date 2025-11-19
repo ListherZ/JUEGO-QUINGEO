@@ -175,6 +175,7 @@ namespace Jsgaona {
         public void Dash() {
             // Se valida que no se este realizando un dash, o el dash este en enfiramiento
             if(!isDashing && !dashInCooldown) {
+                animator.SetTrigger("dash");
                 StartCoroutine(StartDash());
             }
         }
