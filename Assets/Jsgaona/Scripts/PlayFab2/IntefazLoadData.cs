@@ -52,7 +52,7 @@ namespace Jsgaona
                 },
                 error =>
                 {
-                    Debug.LogError("❌ Error cargando datos: " + error.GenerateErrorReport());
+                    Debug.LogError("Error cargando datos: " + error.GenerateErrorReport());
                 });
         }
 

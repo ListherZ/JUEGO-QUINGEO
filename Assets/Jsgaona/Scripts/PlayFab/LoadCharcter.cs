@@ -43,7 +43,7 @@ namespace Assets.Jsgaona
             base.Start();
 
             // Se pregunta si existe la referencia del jugador para destruirlo
-            GameObject playerDetected = GameObject.FindGameObjectWithTag("Player");
+            GameObject playerDetected = FindPlayerInHierarchy();
             if (playerDetected == null)
             {
                 playerDetected = Instantiate(prefabPlayer, initialPoint.position, initialPoint.rotation);
@@ -98,8 +98,18 @@ namespace Assets.Jsgaona
             playerDetected.transform.rotation = Quaternion.Euler(0, 0, 0);
             if (virtualCamera != null)
             {
-                virtualCamera.Follow = playerDetected.transform;
-                virtualCamera.LookAt = playerDetected.transform;
+                Transform cameraTarget = null;
+                GameObject lookTarget = GameObject.FindGameObjectWithTag("look");
+                if (lookTarget != null)
+                {
+                    cameraTarget = lookTarget.transform;
+                }
+                if (cameraTarget == null)
+                {
+                    cameraTarget = playerDetected.transform;
+                }
+                virtualCamera.Follow = cameraTarget;
+                virtualCamera.LookAt = cameraTarget;
             }
 
             foreach (EnemyAi currentEnemy in allEnemies)
@@ -126,7 +136,7 @@ namespace Assets.Jsgaona
             if (playerCombat != null) playerCombat.onDead -= HandlePlayerDeath;
         }
 
-        // Método que se llama cuando el jugador muere
+        // Mï¿½todo que se llama cuando el jugador muere
 
         private void HandlePlayerDeath()
         {
@@ -153,5 +163,20 @@ namespace Assets.Jsgaona
                 gameOverUI.SetActive(true);
             }
         }
+
+        private static GameObject FindPlayerInHierarchy()
+        {
+            Transform[] allTransforms = FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (Transform t in allTransforms)
+            {
+                if (t.CompareTag("Player"))
+                {
+                    return t.gameObject;
+                }
+            }
+
+            return null;
+        }
+
     }
 }
